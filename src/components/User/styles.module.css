@@ -1,0 +1,17 @@
+.user-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    background-color: transparent;
+}
+
+.username {
+    background-color: transparent;
+    
+}
+.user-role {
+    background-color: transparent;
+    
+}
