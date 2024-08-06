@@ -2,7 +2,7 @@ import styles from "./styles.module.css"
 import LeftPane from "../LeftPane/leftPane"
 import RightPane from "../RightPane/rightPane"
 import getUsers from "../../services/getUsers"
-import retrieveBooks from "../../services/getBooks"
+import { retrieveBooksWithoutLogIn } from "../../services/getBooks"
 import {useState, useEffect} from 'react'
 
 
@@ -19,7 +19,7 @@ const AdminBody = (props) => {
                 setUsers(usersResponse.users)
             }
 
-            const booksResponse = await retrieveBooks(0, 6180);
+            const booksResponse = await retrieveBooksWithoutLogIn(0, 6180);
             if (booksResponse && booksResponse.books) {
                 setBooks(booksResponse.books)
             }

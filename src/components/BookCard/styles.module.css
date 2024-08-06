@@ -5,6 +5,7 @@
     margin-top: 2%;
     margin-left: 0.5%;
     margin-right: 0.5%;
+    cursor: pointer;
 }
 
 .book-card-inner {
@@ -15,7 +16,7 @@
     transform-style: preserve-3d;
 }
 
-.book-card:hover .book-card-inner {
+.book-card-inner.flipped {
     transform: rotateY(180deg);
 }
 
@@ -51,6 +52,8 @@
 .book-description {
     margin: 5%;
     background-color: transparent;
+    overflow: scroll;
+    height: 95%;
 }
 
 .book-title-back-container {
@@ -136,6 +139,3 @@
 .star {
     background-color: transparent;
 }
-
-
-

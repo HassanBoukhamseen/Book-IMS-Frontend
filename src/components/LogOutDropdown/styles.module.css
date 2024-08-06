@@ -8,7 +8,7 @@
     border: none;
     background-color: #172242;
     border-radius: 9px;
-    width: 6%;
+    width: 7%;
     height: 3em;
 }
 
@@ -24,7 +24,16 @@
     margin-top: -1%;
 }
 
+#logout-icon {
+    background-color: transparent;
+}
+
 .logout-options-element {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
     background-color: transparent;
     cursor: pointer;
+    width: 100%;
 }

@@ -5,14 +5,16 @@ import Pagination from "../components/Pagination/pagination";
 import ChatModal from "../components/ChatModal/chatModal";
 import ChatButton from "../components/ChatButton/chatButton";
 
-import retrieveBooks  from "../services/getBooks";
-import retrieveSearchResults  from "../services/searchLibrary"
+import { retrieveBooksWithoutLogIn, retrieveBooksWithLogIn }  from "../services/getBooks";
+import { retrieveSearchResultsWithoutLogIn, retrieveSearchResultsWithLogIn } from "../services/searchLibrary"
+import getLikedBooks from "../services/getLikedBooks"
 import setPagination from "../services/setPagination"
 
 import { useEffect, useState } from 'react';
 
-function LibraryPage() {
-    const [books, setBooks] = useState([]);
+function LibraryPage(props) {
+    const [displayContent, setDisplayContent] = useState([]);
+
     const [currentPage, setCurrentPage] = useState(1);
     const [pagesCount, setPagesCount] = useState(0);
     const [pages, setPages] = useState([1, 2, 3, 4, 5]);
@@ -20,60 +22,71 @@ function LibraryPage() {
     const [filtersDisplay, setFiltersDisplay] = useState("none");
     const [modalDisplay, setModalDisplay] = useState("none");
 
-    const [searchResults, setSearchResults] = useState([]);
+    
     const [searchInput, setSearchInput] = useState("");
-    const [displaySearchOrAll, setDisplaySearchOrAll] = useState("all");
+    const [displayType, setDisplayType] = useState("all");
     
     const [orderBy, setOrderBy] = useState(null);
 
     useEffect(() => {
         const fetchBooksAndAuthors = async () => {
-            if (searchInput === "" ) {
-                setDisplaySearchOrAll("all")
-                setSearchResults([])
-            }
             try {
-                if (displaySearchOrAll === "all") {
-                    const booksResponse = await retrieveBooks((currentPage - 1) * 12, currentPage * 12, orderBy);
+                if (displayType === "all") {
+                    const booksResponse = props.loggedIn === true ? 
+                    await retrieveBooksWithLogIn((currentPage - 1) * 12, currentPage * 12, orderBy, props.token) :
+                    await retrieveBooksWithoutLogIn((currentPage - 1) * 12, currentPage * 12, orderBy);
                     if (booksResponse && booksResponse.books) {
-                        setBooks(booksResponse.books);
-                        setPagesCount(booksResponse.count);
+                        setDisplayContent(booksResponse.books);
+                        setPagesCount(Math.ceil(booksResponse.count) / 12);
                     }
-                } else if (displaySearchOrAll === "search") {
-                    const searchResultsResponse = await retrieveSearchResults(searchInput, (currentPage - 1) * 12, currentPage * 12);
+                } else if (displayType === "search") {
+                    const searchResultsResponse = props.loggedIn === true ? 
+                    await retrieveSearchResultsWithLogIn(searchInput, (currentPage - 1) * 12, currentPage * 12, props.token) : 
+                    await retrieveSearchResultsWithoutLogIn(searchInput, (currentPage - 1) * 12, currentPage * 12);
                     if (searchResultsResponse && searchResultsResponse.books) {
-                        setSearchResults(searchResultsResponse.books)
+                        setDisplayContent(searchResultsResponse.books)
                         setPagesCount(Math.ceil(searchResultsResponse.count / 12));
+                    }
+                } else if (displayType === "liked" && props.loggedIn) {
+                    const likedBooksResponse =
+                        await getLikedBooks(props.token, (currentPage - 1) * 12, currentPage * 12, setDisplayType)
+                    if (likedBooksResponse && likedBooksResponse.liked_books) {
+                        setDisplayContent(likedBooksResponse.liked_books)
+                        setPagesCount(Math.ceil(likedBooksResponse.count / 12))
                     }
                 }
                 setPagination(currentPage, setCurrentPage, setPages, pagesCount)
             } catch (error) {
-                console.error('Failed to fetch books or authors', error);
+                console.error('Failed to fetch books', error);
             }
         };
         fetchBooksAndAuthors();
-    }, [currentPage, displaySearchOrAll, searchInput, pagesCount, orderBy]);
-
+    }, [currentPage, displayType, searchInput, pagesCount, orderBy, props.token, props.loggedIn]);
+    console.log(displayType)
     return (
         <div>
             <SearchBar
                 filtersDisplay={filtersDisplay}
                 setFiltersDisplay={setFiltersDisplay}
-                setDisplaySearchOrAll={setDisplaySearchOrAll}
+                setDisplayType={setDisplayType}
+                setDisplayContent={setDisplayContent}
                 searchInput={searchInput}
                 setSearchInput={setSearchInput}
                 setCurrentPage={setCurrentPage}
+                loggedIn={props.loggedIn}
+                displayType={displayType}
             />
             <SearchFilters 
                 filtersDisplay={filtersDisplay} 
                 setOrderBy={setOrderBy}
-                setDisplaySearchOrAll={setDisplaySearchOrAll}
-                setSearchResults={setSearchResults}
+                setDisplayType={setDisplayType}
             />
-            {books.length > 0 ? (
+            {displayContent.length > 0 ? (
                 <BookGallary
-                    books={books}
-                    searchResults={searchResults}
+                    displayContent={displayContent}
+                    setDisplayContent={setDisplayContent}
+                    loggedIn={props.loggedIn}
+                    token={props.token}
                 />
             ) : (
                 <div>Loading...</div>

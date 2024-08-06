@@ -35,7 +35,7 @@ function App() {
     <BrowserRouter>
     <Routes>
       <Route path="/login-signup" element={<LoginSignupPage setLoggedIn={setLoggedIn} loggedIn={loggedIn} setToken={setToken}/>} />
-      <Route path="/" element={<LibraryPage />} />
+      <Route path="/" element={<LibraryPage loggedIn={loggedIn} token={token}/>} />
       <Route path="/admin" element={<AdminPage token={token}/>} />
     </Routes>
   </BrowserRouter> 
