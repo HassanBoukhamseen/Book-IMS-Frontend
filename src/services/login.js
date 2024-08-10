@@ -10,7 +10,6 @@ async function login(username, password) {
         })
     })
     .then(response => response.json())
-    // .then(response => console.log(response))
     .catch(error => {
         console.log(error);
         throw error;

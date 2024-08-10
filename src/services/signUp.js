@@ -1,7 +1,4 @@
 const signUp = (inputEmail, inputPass, firstName, lastName) => {
-    console.log(
-        inputEmail, inputPass, firstName, lastName
-    )
     return fetch("http://127.0.0.1:8000/users/register", {
         method: "POST",
         headers: {

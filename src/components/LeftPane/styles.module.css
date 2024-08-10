@@ -18,6 +18,7 @@
     margin-left: auto;
     margin-right: auto;
     font-size: 13pt;
+    margin-bottom: 5%;
 }
 
 #left-pane-body {
@@ -29,4 +30,30 @@
     width: 100%;
     background-color: transparent;
     overflow: scroll;
+}
+
+.bookRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    background-color: transparent;
+    color: white;
+    width: 53.5%;
+    position: absolute;
+    top: 20%;
+}
+
+.bookRow:nth-child(even) {
+    background-color: transparent;
+}
+
+.bookCell {
+    flex: 1;
+    text-align: left;
+    background-color: transparent;
+    width: 100%;
+    margin-left: 1%; 
+    margin-right: 1%; 
 }
